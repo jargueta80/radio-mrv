@@ -6,32 +6,21 @@ const volume = document.getElementById("volume");
 const trackInfo = document.getElementById("trackInfo");
 
 let playing = false;
-let audioCtxStarted = false;
-
-let audioCtx, src, analyser, canvas, ctx;
 
 playBtn.onclick = async () => {
-  if (!audioCtxStarted) {
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    src = audioCtx.createMediaElementSource(audio);
-    analyser = audioCtx.createAnalyser();
-    src.connect(analyser);
-    analyser.connect(audioCtx.destination);
-    analyser.fftSize = 64;
-    canvas = document.getElementById("eqCanvas");
-    ctx = canvas.getContext("2d");
-    drawEQ();
-    audioCtxStarted = true;
-  }
-
-  if (!playing) {
-    await audio.play();
-    playing = true;
-    playBtn.textContent = "⏸";
-  } else {
-    audio.pause();
-    playing = false;
-    playBtn.textContent = "▶";
+  try {
+    if (!playing) {
+      await audio.play();
+      playing = true;
+      playBtn.textContent = "⏸";
+    } else {
+      audio.pause();
+      playing = false;
+      playBtn.textContent = "▶";
+    }
+  } catch (e) {
+    console.log("Error al reproducir:", e);
+    trackInfo.textContent = "Error al iniciar el audio";
   }
 };
 
@@ -50,20 +39,4 @@ async function loadMetadata() {
 }
 setInterval(loadMetadata, 5000);
 loadMetadata();
-
-/* ECUALIZADOR */
-function drawEQ() {
-  requestAnimationFrame(drawEQ);
-  const buffer = new Uint8Array(analyser.frequencyBinCount);
-  analyser.getByteFrequencyData(buffer);
-
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  const barWidth = canvas.width / buffer.length;
-
-  for (let i=0; i<buffer.length; i++) {
-    const h = buffer[i];
-    ctx.fillStyle = "rgb(56,189,248)";
-    ctx.fillRect(i * barWidth, canvas.height - h, barWidth - 2, h);
-  }
-}
 </script>
