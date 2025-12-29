@@ -6,40 +6,39 @@ const volume = document.getElementById("volume");
 const trackInfo = document.getElementById("trackInfo");
 
 let playing = false;
-let audioCtxStarted = false;
-
-let audioCtx, src, analyser, canvas, ctx;
+let audioCtx = null;
+let analyser = null;
+let src = null;
+let canvas = null;
+let ctx = null;
 
 /* PLAY / PAUSE */
 playBtn.onclick = async () => {
   try {
-    if (!audioCtxStarted) {
-      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
-      // Fuente del audio
-      src = audioCtx.createMediaElementSource(audio);
-
-      // Analizador para el EQ
-      analyser = audioCtx.createAnalyser();
-      analyser.fftSize = 64;
-
-      // 🔥 CADENA CORRECTA (ESTO ES LO QUE FALTABA)
-      src.connect(analyser);
-      analyser.connect(audioCtx.destination);
-
-      // EQ
-      canvas = document.getElementById("eqCanvas");
-      ctx = canvas.getContext("2d");
-      drawEQ();
-
-      audioCtxStarted = true;
-    }
-
     if (!playing) {
       audio.volume = volume.value;
+
+      // 🔥 Primero reproducimos el audio SIN AudioContext
       await audio.play();
       playing = true;
       playBtn.textContent = "⏸";
+
+      // 🔥 Ahora sí iniciamos el EQ (solo después de que el audio ya suena)
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        src = audioCtx.createMediaElementSource(audio);
+        analyser = audioCtx.createAnalyser();
+        analyser.fftSize = 64;
+
+        src.connect(analyser);
+        analyser.connect(audioCtx.destination);
+
+        canvas = document.getElementById("eqCanvas");
+        ctx = canvas.getContext("2d");
+
+        drawEQ();
+      }
+
     } else {
       audio.pause();
       playing = false;
