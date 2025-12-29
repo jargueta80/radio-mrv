@@ -1,4 +1,100 @@
 radio-widget.html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Radio MRV</title>
+
+<style>
+body {
+  background: #0f172a;
+  font-family: Inter, sans-serif;
+  display: flex;
+  justify-content: center;
+  padding: 30px;
+}
+
+.player-box {
+  width: 400px;
+  background: linear-gradient(180deg, #0f172a, #1e293b);
+  padding: 25px;
+  border-radius: 22px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.45);
+  text-align: center;
+  color: white;
+}
+
+.cover {
+  width: 100%;
+  border-radius: 18px;
+  margin-bottom: 18px;
+}
+
+.title {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.metadata {
+  font-size: 15px;
+  opacity: 0.85;
+  margin-bottom: 20px;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 35px;
+  margin-bottom: 20px;
+}
+
+.play-btn {
+  background: #10b981;
+  border: none;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  font-size: 32px;
+  color: #022c22;
+  cursor: pointer;
+}
+
+.small-btn {
+  background: none;
+  border: none;
+  font-size: 32px;
+  color: white;
+  cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="player-box">
+
+  <img class="cover" src="https://i.postimg.cc/DZL9v2XH/Ministerio-Restaurando-vidas.png" />
+
+  <div class="title">Ministerio Restaurando Vidas</div>
+
+  <div id="trackInfo" class="metadata">Cargando título…</div>
+
+  <div class="controls">
+    <button class="small-btn">⏮</button>
+    <button id="playBtn" class="play-btn">▶</button>
+    <button class="small-btn">⏭</button>
+  </div>
+
+  <input id="volume" type="range" min="0" max="1" step="0.01" value="0.8" style="width:100%;">
+
+  <audio id="player" preload="none">
+    <source src="https://corsproxy.io/?http://stream2.305stream.com:8890/stream" type="audio/mpeg">
+  </audio>
+
+</div>
+
 <script>
 const audio = document.getElementById("player");
 const playBtn = document.getElementById("playBtn");
@@ -19,14 +115,12 @@ playBtn.onclick = async () => {
       playBtn.textContent = "▶";
     }
   } catch (e) {
-    console.log("Error al reproducir:", e);
-    trackInfo.textContent = "Error al iniciar el audio";
+    console.log("Error:", e);
   }
 };
 
 volume.oninput = () => audio.volume = volume.value;
 
-/* METADATA */
 async function loadMetadata() {
   try {
     const res = await fetch("https://corsproxy.io/?http://stream2.305stream.com:8890/status-json.xsl");
@@ -40,3 +134,6 @@ async function loadMetadata() {
 setInterval(loadMetadata, 5000);
 loadMetadata();
 </script>
+
+</body>
+</html>
