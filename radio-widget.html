@@ -12,15 +12,15 @@ radio-widget.html
       font-family: Inter, sans-serif;
       display: flex;
       justify-content: center;
-      padding: 20px;
+      padding: 10px;
       margin: 0;
     }
 
     .player-box {
-      width: 600px; /* MÁS ANCHO */
+      width: 1200px; /* ⭐ 3 VECES MÁS ANCHO */
       background: linear-gradient(180deg, #0f172a, #1e293b);
-      padding: 16px 20px; /* MÁS BAJO */
-      border-radius: 16px;
+      padding: 10px 16px; /* ⭐ RECORTADO A LA MITAD */
+      border-radius: 14px;
       box-shadow: 0 6px 18px rgba(0,0,0,0.4);
       text-align: center;
       color: white;
@@ -29,36 +29,36 @@ radio-widget.html
 
     .cover {
       width: 100%;
-      border-radius: 12px;
-      margin-bottom: 10px; /* MENOS ESPACIO */
+      border-radius: 10px;
+      margin-bottom: 6px; /* ⭐ MENOS ESPACIO */
     }
 
     .title {
-      font-size: 20px;
+      font-size: 18px;
       font-weight: 700;
-      margin-bottom: 4px;
+      margin-bottom: 2px;
     }
 
     .metadata {
-      font-size: 14px;
+      font-size: 13px;
       opacity: 0.85;
-      margin-bottom: 12px;
+      margin-bottom: 8px;
     }
 
     .controls {
       display: flex;
       justify-content: center;
-      gap: 28px;
-      margin-bottom: 12px;
+      gap: 24px;
+      margin-bottom: 8px;
     }
 
     .play-btn {
       background: #10b981;
       border: none;
-      width: 58px;
-      height: 58px;
+      width: 50px;
+      height: 50px;
       border-radius: 50%;
-      font-size: 28px;
+      font-size: 26px;
       color: #022c22;
       cursor: pointer;
     }
@@ -66,7 +66,7 @@ radio-widget.html
     .small-btn {
       background: none;
       border: none;
-      font-size: 28px;
+      font-size: 26px;
       color: white;
       cursor: pointer;
     }
@@ -75,15 +75,15 @@ radio-widget.html
     .equalizer {
       display: flex;
       justify-content: center;
-      gap: 5px;
-      height: 28px;
-      margin-top: 8px;
+      gap: 4px;
+      height: 22px;
+      margin-top: 6px;
       opacity: 0;
       transition: opacity 0.3s ease;
     }
 
     .bar {
-      width: 5px;
+      width: 4px;
       background: #38bdf8;
       border-radius: 2px;
       animation: bounce 1s infinite ease-in-out;
@@ -96,9 +96,9 @@ radio-widget.html
     .bar:nth-child(5) { animation-delay: 0s; }
 
     @keyframes bounce {
-      0% { height: 6px; }
-      50% { height: 28px; }
-      100% { height: 6px; }
+      0% { height: 5px; }
+      50% { height: 22px; }
+      100% { height: 5px; }
     }
   </style>
 </head>
@@ -147,13 +147,13 @@ radio-widget.html
         audio.play().then(() => {
           playing = true;
           playBtn.textContent = "⏸";
-          eq.style.opacity = 1; // EQ aparece
+          eq.style.opacity = 1;
         });
       } else {
         audio.pause();
         playing = false;
         playBtn.textContent = "▶";
-        eq.style.opacity = 0; // EQ desaparece
+        eq.style.opacity = 0;
       }
     };
 
@@ -163,7 +163,6 @@ radio-widget.html
 
     async function loadMetadata() {
       try {
-        // ⭐ USAR HTTP PARA METADATA (HTTPS NO FUNCIONA EN TU SERVIDOR)
         const res = await fetch("http://stream2.305stream.com:8890/status-json.xsl");
         const data = await res.json();
         const title = data.icestats?.source?.title || "En vivo";
