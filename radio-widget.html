@@ -71,14 +71,6 @@ radio-widget.html
       color: white;
       cursor: pointer;
     }
-
-    #eqCanvas {
-      width: 100%;
-      height: 60px;
-      background: #0f172a;
-      border-radius: 10px;
-      margin-top: 15px;
-    }
   </style>
 </head>
 
@@ -97,11 +89,9 @@ radio-widget.html
 
     <input id="volume" type="range" min="0" max="1" step="0.01" value="0.8" style="width:100%;">
 
-    <canvas id="eqCanvas" width="380" height="60"></canvas>
-
     <audio id="player" preload="none">
-      <!-- ⭐ AUDIO POR HTTP (ESTO ES LO QUE PERMITE QUE SE ESCUCHE) -->
-      <source src="https://stream2.305stream.com:8890/stream" type="audio/mpeg">
+      <!-- ⭐ AUDIO POR HTTP PARA QUE SE ESCUCHE -->
+      <source src="http://stream2.305stream.com:8890/stream" type="audio/mpeg">
     </audio>
   </div>
 
@@ -112,11 +102,6 @@ radio-widget.html
     const trackInfo = document.getElementById("trackInfo");
 
     let playing = false;
-    let audioCtx = null;
-    let analyser = null;
-    let src = null;
-    let canvas = null;
-    let ctx = null;
 
     playBtn.onclick = async () => {
       try {
@@ -125,22 +110,6 @@ radio-widget.html
           await audio.play();
           playing = true;
           playBtn.textContent = "⏸";
-
-          if (!audioCtx) {
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            src = audioCtx.createMediaElementSource(audio);
-            analyser = audioCtx.createAnalyser();
-            analyser.fftSize = 64;
-
-            src.connect(analyser);
-            analyser.connect(audioCtx.destination);
-
-            canvas = document.getElementById("eqCanvas");
-            ctx = canvas.getContext("2d");
-
-            drawEQ();
-          }
-
         } else {
           audio.pause();
           playing = false;
@@ -166,25 +135,9 @@ radio-widget.html
         trackInfo.textContent = "En vivo";
       }
     }
+
     setInterval(loadMetadata, 5000);
     loadMetadata();
-
-    function drawEQ() {
-      requestAnimationFrame(drawEQ);
-      if (!analyser) return;
-
-      const buffer = new Uint8Array(analyser.frequencyBinCount);
-      analyser.getByteFrequencyData(buffer);
-
-      ctx.clearRect(0,0,canvas.width,canvas.height);
-      const barWidth = canvas.width / buffer.length;
-
-      for (let i = 0; i < buffer.length; i++) {
-        const h = buffer[i];
-        ctx.fillStyle = "rgb(56,189,248)";
-        ctx.fillRect(i * barWidth, canvas.height - h, barWidth - 2, h);
-      }
-    }
   </script>
 </body>
 </html>
