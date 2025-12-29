@@ -90,8 +90,7 @@ radio-widget.html
     <input id="volume" type="range" min="0" max="1" step="0.01" value="0.8" style="width:100%;">
 
     <audio id="player" preload="none">
-      <!-- ⭐ AUDIO POR HTTP PARA QUE SE ESCUCHE -->
-      <source src="http://stream2.305stream.com:8890/stream" type="audio/mpeg">
+      <source src="https://stream2.305stream.com:8890/stream" type="audio/mpeg">
     </audio>
   </div>
 
@@ -127,7 +126,7 @@ radio-widget.html
 
     async function loadMetadata() {
       try {
-        const res = await fetch("http://stream2.305stream.com:8890/status-json.xsl");
+        const res = await fetch("https://stream2.305stream.com:8890/status-json.xsl");
         const data = await res.json();
         const title = data.icestats?.source?.title || "En vivo";
         trackInfo.textContent = title;
